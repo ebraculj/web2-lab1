@@ -1,8 +1,21 @@
 # Koristi službenu JDK sliku kao osnovu
-FROM openjdk:17-jdk-slim AS build
+FROM openjdk:17 AS build
 
 # Postavi radni direktorij
 WORKDIR /app
+
+# Uključivanje gradle wrappera
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle .
+COPY settings.gradle .
+
+# Daje pravo izvršenja
+RUN chmod +x gradlew
+
+# Izgradnja aplikacije
+RUN ./gradlew build --no-daemon
+
 
 # Kopiraj build.gradle i settings.gradle
 COPY build.gradle settings.gradle ./
