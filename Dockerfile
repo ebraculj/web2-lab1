@@ -1,43 +1,35 @@
-# Koristi službenu JDK sliku kao osnovu
+# Use official JDK image as base
 FROM openjdk:17 AS build
 
-# Postavi radni direktorij
+# Set working directory
 WORKDIR /app
 
-# Uključivanje gradle wrappera
-COPY gradlew .
-COPY gradle gradle
+# Copy Gradle files first to leverage caching
 COPY build.gradle .
 COPY settings.gradle .
+COPY gradle gradle/
 
-# Daje pravo izvršenja
+# Make gradlew executable
+COPY gradlew .
 RUN chmod +x gradlew
 
-# Izgradnja aplikacije
-RUN ./gradlew build --no-daemon
+# Download dependencies (cache this layer)
+RUN ./gradlew build --no-daemon --stacktrace
 
-
-# Kopiraj build.gradle i settings.gradle
-COPY build.gradle settings.gradle ./
-COPY gradle gradle
-
-# Preuzmi ovisnosti (cache)
-RUN ./gradlew build --no-daemon --stacktrace --info
-
-# Kopiraj izvorni kod
+# Copy the rest of the application code
 COPY src ./src
 
-# Izgradi aplikaciju
+# Build the application
 RUN ./gradlew bootJar --no-daemon --stacktrace
 
-# Stvori konačni Docker image
+# Final image
 FROM openjdk:17
 
-# Postavi radni direktorij
+# Set working directory
 WORKDIR /app
 
-# Kopiraj JAR datoteku iz build faze
+# Copy the built JAR file
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# Pokreni aplikaciju
+# Run the application
 ENTRYPOINT ["java", "-jar", "app.jar"]

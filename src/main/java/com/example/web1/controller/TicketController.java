@@ -64,7 +64,7 @@ public class TicketController {
 
         try{
             //String qrCodeurl = "http://localhost:8080/ticket.html?id=" + saved.getUuid();
-            String qrCodeurl = "http://localhost:8080/api/ticket/ticket-data/" + saved.getUuid();
+            String qrCodeurl = "http://localhost:8080/api" + "/ticket/ticket-data/" + saved.getUuid();
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bm = qrCodeWriter.encode(qrCodeurl, BarcodeFormat.QR_CODE, 200, 200);
 
