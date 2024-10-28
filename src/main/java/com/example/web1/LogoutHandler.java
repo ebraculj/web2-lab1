@@ -48,8 +48,7 @@ public class LogoutHandler extends SecurityContextLogoutHandler {
         // Invalidate the session and clear the security context
         super.logout(httpServletRequest, httpServletResponse, authentication);
 
-        // Build the URL to log the user out of Auth0 and redirect them to the home page.
-        // URL will look like https://YOUR-DOMAIN/v2/logout?clientId=YOUR-CLIENT-ID&returnTo=http://localhost:3000
+
         String issuer = (String) getClientRegistration().getProviderDetails().getConfigurationMetadata().get("issuer");
         String clientId = getClientRegistration().getClientId();
         String returnTo = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
