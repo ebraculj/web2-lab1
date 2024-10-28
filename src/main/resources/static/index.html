@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+</head>
+<body>
+<div>
+    <h1>Dobrodošli na stranicu s ulaznicama!</h1>
+    <p>Ukupan broj generiranih ulaznica: <span id="ticket-count">0</span></p>
+    <div id="error-message"></div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function (){
+        fetch('api/ticket/count').then(response => response.json())
+            .then(data => {
+                document.getElementById("ticket-count").textContent = data;
+                console.log(data);
+            })
+            .catch(e => {
+                console.error("Greška pri dohvaćanju broja karata")
+                document.getElementById("error-message").textContent = "Greška pri dohvaćanju broja karata";
+            })
+    })
+</script>
+</body>
+</html>

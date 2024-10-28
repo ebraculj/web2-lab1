@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+  <title>Podaci o ulaznici</title>
+</head>
+<body>
+<div>
+  <h1>Podaci o ulaznici</h1>
+  <div id="ticket-info"></div> <!-- Ovdje će se prikazivati podaci -->
+  <div id="error-message"></div> <!-- Ovdje će se prikazivati poruke o greškama -->
+  <button id="logoutbtn">Logout</button>
+  <div id="user-data"></div>
+</div>
+<script>
+
+  fetch('/api/user').then(response => {
+    if(!response.ok){
+      throw new Error("greska");
+    }
+    //console.log(response);
+    return response.json();
+  }).then(data => {
+    //console.log(data)
+    if(data.name){
+      const info = document.getElementById("user-data");
+      info.innerHTML = `<p>Prijavljeni korisnik: ${data.name}</p>`
+    }else{
+      console.error("Nije moguće dohvatiti podatke prijavljenog korisnika.");
+    }
+  }).catch(err => console.error("Greska", err));
+
+      const path = window.location.search.split("?").pop();
+      const id = path.split("=").pop();
+      //console.log(id)
+
+      // Fetch zahtjev za dohvaćanje podataka o ulaznici
+      fetch(`/api/ticket/${id}`
+       /* method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' // Opcionalno
+        }*/
+      )
+              .then(response =>{
+                if(!response.ok){
+                  throw new Error("Greska");
+                }
+                return response.json()})
+              //console.log(response);})
+              .then(data => {
+                //console.log(data)
+                const infos = document.getElementById("ticket-info");
+                infos.innerHTML = `
+         <p>OIB: ${data.vatin}</p>
+         <p>Ime: ${data.firstName}</p>
+         <p>Prezime: ${data.lastName}</p>
+         <p>Datum i vrijeme: ${new Date(data.dateTime).toLocaleString()}</p>
+       `;
+              })
+              .catch(error => {
+                console.error("Nije moguće dohvatiti kartu", error);
+                document.getElementById("error-message").innerText = "Došlo je do greške: " + error.message;
+              });
+
+      document.getElementById("logoutbtn").addEventListener('click', () => {
+        window.location.href = '/logout';
+      });
+
+</script>
+
+</body>
+</html>
