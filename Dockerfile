@@ -22,7 +22,7 @@ COPY build.gradle settings.gradle ./
 COPY gradle gradle
 
 # Preuzmi ovisnosti (cache)
-RUN ./gradlew build --no-daemon --stacktrace
+RUN ./gradlew build --no-daemon --stacktrace --info
 
 # Kopiraj izvorni kod
 COPY src ./src
