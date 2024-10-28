@@ -18,7 +18,7 @@ COPY src ./src
 RUN ./gradlew bootJar --no-daemon --stacktrace
 
 # Stvori konačni Docker image
-FROM openjdk:17-jre-slim
+FROM openjdk:17
 
 # Postavi radni direktorij
 WORKDIR /app
